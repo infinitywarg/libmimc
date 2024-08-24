@@ -55,14 +55,14 @@ public:
     // Constructor to initialize element and modulus
     Field(unsigned int el, unsigned int mod) : element(el % mod), modulus(mod) {
         if (modulus == 0) {
-            throw std::invalid_argument("Modulus must be a positive integer.");
+            throw invalid_argument("Modulus must be a positive integer.");
         }
     }
 
     // Addition modulo
     Field add(const Field& other) const {
         if (modulus != other.modulus) {
-            throw std::invalid_argument("Moduli must be the same for addition.");
+            throw invalid_argument("Moduli must be the same for addition.");
         }
         return {(element + other.element) % modulus, modulus};
     }
@@ -70,7 +70,7 @@ public:
     // Subtraction modulo
     Field sub(const Field& other) const {
         if (modulus != other.modulus) {
-            throw std::invalid_argument("Moduli must be the same for subtraction.");
+            throw invalid_argument("Moduli must be the same for subtraction.");
         }
         return {((element + modulus) - other.element) % modulus, modulus};
     }
@@ -78,7 +78,7 @@ public:
     // Multiplication modulo
     Field mul(const Field& other) const {
         if (modulus != other.modulus) {
-            throw std::invalid_argument("Moduli must be the same for multiplication.");
+            throw invalid_argument("Moduli must be the same for multiplication.");
         }
         return {(element * other.element) % modulus, modulus};
     }
@@ -86,7 +86,7 @@ public:
     // Division modulo (using modular inverse)
     Field div(const Field& other) const {
         if (modulus != other.modulus) {
-            throw std::invalid_argument("Moduli must be the same for division.");
+            throw invalid_argument("Moduli must be the same for division.");
         }
         unsigned int inverse = modInverse(other.element, modulus);
         return {(element * inverse) % modulus, modulus};
@@ -96,13 +96,13 @@ public:
     // Exponentiation
     Field pow(const Field& exponent) const {
         if (exponent.modulus != modulus) {
-            throw std::invalid_argument("Exponent modulus must be the same as the base modulus.");
+            throw invalid_argument("Exponent modulus must be the same as the base modulus.");
         }
         return {expMod(element, exponent.element, modulus), modulus};
     }
 
     // Print the field element as "element mod modulus"
     void print() const {
-        std::cout << element << " mod " << modulus << std::endl;
+        cout << element << " mod " << modulus << endl;
     }
 };

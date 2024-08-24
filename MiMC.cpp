@@ -35,7 +35,7 @@ private:
 
     static unsigned int compute_log_base_e(unsigned int p, unsigned int e) {
         if (e <= 1) {
-            throw std::invalid_argument("Base e must be greater than 1.");
+            throw invalid_argument("Base e must be greater than 1.");
         }
 
         double log2p = log2(p);
@@ -47,7 +47,7 @@ private:
 
     static unsigned int compute_smallest_factor(unsigned int p, unsigned int e) {
         if (e == 0) {
-            throw std::invalid_argument("Modulus e must be greater than 0.");
+            throw invalid_argument("Modulus e must be greater than 0.");
         }
 
         unsigned int p_minus_1 = p - 1;
@@ -65,7 +65,7 @@ private:
         unsigned int numerator = 1 + z * (p - 1);
 
         if (numerator % e != 0) {
-            throw std::logic_error("Numerator is not divisible by e.");
+            throw logic_error("Numerator is not divisible by e.");
         }
 
         unsigned int d = numerator / e;
@@ -75,7 +75,7 @@ private:
 public:
     MiMC (unsigned int modulus) {
         if (modulus == 0) {
-            throw std::invalid_argument("Modulus must be a positive integer.");
+            throw invalid_argument("Modulus must be a positive integer.");
         }
         this->modulus = modulus;
         this->e = compute_encryption_exponent(modulus);
@@ -93,59 +93,59 @@ public:
     }
 
     void print() const {
-        std::cout << "MiMC config generated with below parameters" << std::endl;
-        std::cout << "Prime Field: " << this->modulus << std::endl;
-        std::cout << "Encryption Exponent: " << this->e << std::endl;
-        std::cout << "Number of Rounds: " << this->r <<std::endl;
-        std::cout << "Decryption Exponent: " << this->d << std::endl;
-        std::cout << "Round Constants: " << std::endl;
+        cout << "MiMC config generated with below parameters" << endl;
+        cout << "Prime Field: " << this->modulus << endl;
+        cout << "Encryption Exponent: " << this->e << endl;
+        cout << "Number of Rounds: " << this->r << endl;
+        cout << "Decryption Exponent: " << this->d << endl;
+        cout << "Round Constants: " << endl;
         for (size_t i = 0; i < this->r; ++i) {
-            std::cout << "round_constants[" << i << "] = " << this->round_constants[i] << std::endl;
+            cout << "round_constants[" << i << "] = " << this->round_constants[i] << endl;
         }
     }
 
     Field encrypt(Field plain, Field key) {
-        std::cout << "Encryption Started-----------"<< std::endl;
+        cout << "Encryption Started-----------"<< endl;
         Field exp(this->e, this->modulus);
 
-        std::cout << "Round 0: ";
+        cout << "Round 0: ";
         Field cipher = (plain.add(key)).pow(exp); // first round
         cipher.print();
 
         for(int i=1;i<this->r;i++){
-            std::cout << "Round " << i << ": ";
+            cout << "Round " << i << ": ";
             Field curr_constant(this->round_constants[i], this->modulus);
             cipher = (cipher.add(key).add(curr_constant)).pow(exp);
             cipher.print();
         }
 
-        std::cout << "Round " << this->r+1 << ": ";
+        cout << "Round " << this->r+1 << ": ";
         cipher = cipher.add(key);
         cipher.print();
-        std::cout << "Encryption Ended-----------"<< std::endl;
+        cout << "Encryption Ended-----------"<< endl;
         return cipher;
     }
 
     Field decrypt(Field cipher, Field key) {
-        std::cout << "Decryption Started-----------"<< std::endl;
+        cout << "Decryption Started-----------"<< endl;
 
         Field dxp(this->d, this->modulus);
 
-        std::cout << "Round " << this->r << ":";
+        cout << "Round " << this->r << ":";
         Field plain = cipher.sub(key);
         plain.print();
 
         for(int i=(this->r)-1;i>0;i--){
-            std::cout << "Round " << i << ":";
+            cout << "Round " << i << ":";
             Field curr_constant(this->round_constants[i], this->modulus);
             plain = (plain.pow(dxp)).sub(key.add(curr_constant));
             plain.print();
         }
 
-        std::cout << "Round 0:";
+       cout << "Round 0:";
         plain = (plain.pow(dxp)).sub(key);
         plain.print();
-        std::cout << "Decryption Ended-----------"<< std::endl;
+        cout << "Decryption Ended-----------"<< endl;
         return plain;
     }
 
